@@ -1,24 +1,33 @@
-using IdentityServer.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace IdentityServer
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public Startup(IConfiguration configuration) =>
+            Configuration = configuration;
+
+        private IConfiguration Configuration { get;}
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentityServer()
-                    .AddInMemoryClients(Config.Clients("http://localhost:5001"))
-                    .AddInMemoryApiScopes(Config.Scopes())
-                    .AddInMemoryApiResources(Config.Apis())
-                    .AddInMemoryIdentityResources(Config.Resources())
-                    .AddDeveloperSigningCredential();
-
+                    .AddDeveloperSigningCredential()
+                    .AddConfigurationStore(options =>
+                    {
+                        options.ConfigureDbContext = builder => AddDbContext(builder, Configuration);
+                    })
+                    .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = builder => AddDbContext(builder, Configuration);
+                    });
+                    
             services.AddControllers();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -41,5 +50,18 @@ namespace IdentityServer
                 endpoints.MapControllers();
             });
         }
+
+        #region Helpers
+
+        private static DbContextOptionsBuilder AddDbContext(DbContextOptionsBuilder builder,
+            IConfiguration configuration) =>
+            builder.UseSqlServer(configuration.GetConnectionString("IdentityDbConnectionName"),
+                sqlOptions =>
+                {
+                    sqlOptions.MigrationsAssembly(typeof(Startup).Assembly.FullName);
+                    sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                });
+
+        #endregion
     }
 }
