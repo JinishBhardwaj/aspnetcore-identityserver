@@ -28,14 +28,16 @@ namespace IdentityServer
                 Log.Information("Starting applying database migrations...");
                 using var scope = host.Services.CreateScope();
 
+                var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await MigrateDatabaseAsync(applicationDbContext,
+                    async () => await new ApplicationDataSeeder().SeedAsync(applicationDbContext));
+
                 var configurationContext = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                await configurationContext.Database.EnsureCreatedAsync();
-                await new ConfigurationDataSeeder().SeedAsync(configurationContext, configuration);
-                await configurationContext.Database.MigrateAsync();
+                await MigrateDatabaseAsync(configurationContext,
+                    async () => await new ConfigurationDataSeeder().SeedAsync(configurationContext, configuration));
 
                 var persistedGrantDbContext = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
-                await persistedGrantDbContext.Database.EnsureCreatedAsync();
-                await persistedGrantDbContext.Database.MigrateAsync();
+                await MigrateDatabaseAsync(persistedGrantDbContext, () => Task.CompletedTask);
 
                 Log.Information("Starting the host...");
                 await host.RunAsync();
@@ -69,5 +71,13 @@ namespace IdentityServer
                 .WriteTo.Console()
                 .WriteTo.File(new JsonFormatter(), $"{configuration.GetValue<string>("LogFileFullName")}", shared: true, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
+
+        private static async Task MigrateDatabaseAsync<TContext>(TContext context, Func<Task> seeder)
+            where TContext : DbContext
+        {
+            await context.Database.EnsureCreatedAsync();
+            await seeder();
+            await context.Database.MigrateAsync();
+        }
     }
 }

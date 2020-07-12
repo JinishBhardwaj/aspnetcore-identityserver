@@ -1,3 +1,4 @@
+using IdentityServer.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using IdentityServer.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServer
 {
@@ -17,8 +20,14 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options => AddDbContext(options, Configuration));
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
+
             services.AddIdentityServer()
                     .AddDeveloperSigningCredential()
+                    .AddAspNetIdentity<ApplicationUser>()
                     .AddConfigurationStore(options =>
                     {
                         options.ConfigureDbContext = builder => AddDbContext(builder, Configuration);
