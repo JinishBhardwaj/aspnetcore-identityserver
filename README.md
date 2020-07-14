@@ -3,7 +3,7 @@ This is the code base for my 5 part article series **Securing ASP.Net Core Web A
 - [Part 1: Setting up and configuring Identity Server](https://jinishbhardwaj.wordpress.com/2020/07/11/securing-asp-net-core-web-apis-with-identity-server/)
 - [Part 2: Moving Identity Server configuration to the database using Entity Framework Core](https://jinishbhardwaj.wordpress.com/2020/07/11/securing-asp-net-core-web-api-with-identity-server-part-2/)
 - [Part 3: Configuring ASP.Net Identity to work with Identity Server using Entity Framework Core](https://jinishbhardwaj.wordpress.com/2020/07/12/securing-asp-net-core-web-api-with-identity-server-part-3/)
-- Part 4: User authentication and authorization with Identity Server
+- [Part 4: User authentication and authorization with Identity Server](https://jinishbhardwaj.wordpress.com/2020/07/14/securing-asp-net-core-web-api-with-identity-server-part-4/)
 - Part 5: Creating, configuring and securing an ASP.Net Core API (using Swagger UI)
 
 ## Technologies used
