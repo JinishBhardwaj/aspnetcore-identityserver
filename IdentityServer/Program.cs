@@ -75,9 +75,8 @@ namespace IdentityServer
         private static async Task MigrateDatabaseAsync<TContext>(TContext context, Func<Task> seeder)
             where TContext : DbContext
         {
-            await context.Database.EnsureCreatedAsync();
-            await seeder();
             await context.Database.MigrateAsync();
+            await seeder();
         }
     }
 }

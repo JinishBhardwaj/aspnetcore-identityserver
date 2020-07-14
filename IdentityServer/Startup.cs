@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using IdentityServer.Data.Entities;
+using IdentityServer.Services;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServer
@@ -35,7 +37,8 @@ namespace IdentityServer
                     .AddOperationalStore(options =>
                     {
                         options.ConfigureDbContext = builder => AddDbContext(builder, Configuration);
-                    });
+                    })
+                    .Services.AddTransient<IProfileService, UserProfileService>();
                     
             services.AddControllers();
             services.AddControllersWithViews();

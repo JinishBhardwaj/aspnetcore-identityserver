@@ -1,0 +1,16 @@
+﻿.text-center {
+    text-align: center !important;
+}
+.text-danger {
+    color: red;
+}
+.form-group label {
+    display: inline-block;
+}
+.form-group input {
+    display: inline-block;
+}
+.form-group span {
+    display: inline-block;
+    font-size: small;
+}

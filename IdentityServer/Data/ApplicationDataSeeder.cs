@@ -17,7 +17,9 @@ namespace IdentityServer.Data
                 var user = new ApplicationUser
                 {
                     UserName = "test@user.com",
+                    NormalizedUserName = "TEST@USER.COM",
                     Email = "test@user.com",
+                    NormalizedEmail = "TEST@USER.COM",
                     EmailConfirmed = true,
                     PhoneNumber = "1212121212",
                     PhoneNumberConfirmed = true,
