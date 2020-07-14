@@ -6,10 +6,24 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Data
 {
+    /// <summary>
+    /// Provides methods to seed sample data to Asp.Net Identity related tables
+    /// </summary>
     public class ApplicationDataSeeder
     {
+        #region Fields
+
         private readonly IPasswordHasher<ApplicationUser> _hasher = new PasswordHasher<ApplicationUser>();
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Inserts a default user to the database
+        /// </summary>
+        /// <param name="context">Database context</param>
+        /// <returns>Task object representing the asynchronous operation</returns>
         public async Task SeedAsync(ApplicationDbContext context)
         {
             if (!context.Users.Any())
@@ -31,5 +45,7 @@ namespace IdentityServer.Data
                 await context.SaveChangesAsync();
             }
         }
+
+        #endregion
     }
 }

@@ -13,13 +13,30 @@ using static System.String;
 
 namespace IdentityServer.Services
 {
+    /// <summary>
+    /// Provides an implementation of the <see cref="IProfileService"/> to add custom claims
+    /// to the user. These claims will be available in the access token
+    /// </summary>
     public class UserProfileService: IProfileService
     {
+        #region Fields
+
         private readonly UserManager<ApplicationUser> _userManager;
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserProfileService"/> class
+        /// </summary>
+        /// <param name="userManager">Asp.Net Identity user manager</param>
         public UserProfileService(UserManager<ApplicationUser> userManager) =>
             _userManager = userManager;
 
+        #endregion
+
+        /// <inheritdoc /> 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
@@ -29,7 +46,8 @@ namespace IdentityServer.Services
             if (user == null)
                 throw new ArgumentException("Invalid sub claim");
 
-            // Here we can add mode user claims as per requirements
+            // Note: Here we can add additional user claims as required
+            // These claims will be available in the access token generated
             context.IssuedClaims = new List<Claim>
             {
                 new Claim(JwtClaimTypes.Subject, user.Id),
@@ -38,6 +56,7 @@ namespace IdentityServer.Services
             };
         }
 
+        /// <inheritdoc /> 
         public async Task IsActiveAsync(IsActiveContext context)
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));

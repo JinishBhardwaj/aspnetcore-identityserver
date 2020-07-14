@@ -58,6 +58,12 @@ namespace IdentityServer
                 })
                 .UseSerilog();
 
+        #region Helpers
+
+        /// <summary>
+        /// Creates the application configuration container
+        /// </summary>
+        /// <returns><see cref="IConfiguration"/></returns>
         private static IConfiguration GetConfiguration() =>
             new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -65,18 +71,32 @@ namespace IdentityServer
                 .AddEnvironmentVariables()
                 .Build();
 
-        private static Serilog.ILogger CreateLogger(IConfiguration configuration) =>
+        /// <summary>
+        /// Creates the application logger with the provided configuration
+        /// </summary>
+        /// <param name="configuration">Application configuration provider</param>
+        /// <returns><see cref="ILogger"/></returns>
+        private static ILogger CreateLogger(IConfiguration configuration) =>
             new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .WriteTo.Console()
                 .WriteTo.File(new JsonFormatter(), $"{configuration.GetValue<string>("LogFileFullName")}", shared: true, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
+        /// <summary>
+        /// Migrates the database and runs the data seeder
+        /// </summary>
+        /// <typeparam name="TContext">Type of data context</typeparam>
+        /// <param name="context">Database context</param>
+        /// <param name="seeder">Data seeder action to run</param>
+        /// <returns>Task object representing the asynchronous operation</returns>
         private static async Task MigrateDatabaseAsync<TContext>(TContext context, Func<Task> seeder)
             where TContext : DbContext
         {
             await context.Database.MigrateAsync();
             await seeder();
         }
+
+        #endregion
     }
 }

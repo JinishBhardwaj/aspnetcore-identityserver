@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Controllers
 {
+    /// <summary>
+    /// Defines endpoints to manage user account including registration
+    /// and authentication
+    /// </summary>
     public class AccountController : Controller
     {
         #region Fields
@@ -21,6 +25,12 @@ namespace IdentityServer.Controllers
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountController"/> class
+        /// </summary>
+        /// <param name="interactionService">Identity Server interaction service</param>
+        /// <param name="userManager">Asp.Net Identity user manager</param>
+        /// <param name="signInManager">Asp.Net Identity sign-in manager</param>
         public AccountController(IIdentityServerInteractionService interactionService,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)

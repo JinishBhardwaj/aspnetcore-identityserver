@@ -6,9 +6,16 @@ using System.IO;
 
 namespace IdentityServer.Data
 {
+    /// <summary>
+    /// Provides design time support for database migrations for <see cref="ApplicationDbContext"/>
+    /// </summary>
     public class ApplicationDbContextDesignTimeFactory: IDesignTimeDbContextFactory<ApplicationDbContext>
     {
+        #region Fields
+
         private const string AspNetCoreEnvironment = "ASPNETCORE_ENVIRONMENT";
+
+        #endregion
 
         #region Implementation of IDesignTimeDbContextFactory<out ApplicationDbContext>
 
